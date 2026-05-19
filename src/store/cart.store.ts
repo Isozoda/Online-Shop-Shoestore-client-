@@ -12,6 +12,7 @@ interface CartState {
   addItem: (product: Product, variant: ProductVariant, quantity?: number) => void;
   removeItem: (itemId: string) => void;
   updateQuantity: (itemId: string, quantity: number) => void;
+  setItems: (items: CartItem[]) => void;
   clearCart: () => void;
   toggleCart: () => void;
   getTotal: () => number;
@@ -88,6 +89,8 @@ export const useCartStore = create<CartState>()(
           ),
         }));
       },
+
+      setItems: (items) => set({ items }),
 
       clearCart: () => set({ items: [], appliedCoupon: null, couponDiscountPercent: 0 }),
 
