@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination } from 'swiper/modules';
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -47,28 +47,65 @@ export function FeaturedProducts() {
         </div>
 
         {isLoading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {Array.from({ length: 4 }).map((_, i) => <ProductCardSkeleton key={i} />)}
-          </div>
+          <>
+            {/* Mobile View: Loading Skeleton */}
+            <div className="flex sm:hidden overflow-x-auto flex-nowrap gap-4 pb-6 -mx-4 px-4 scrollbar-none">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="w-[70vw] min-w-[200px] max-w-[280px] flex-shrink-0">
+                  <ProductCardSkeleton key={i} />
+                </div>
+              ))}
+            </div>
+            {/* Desktop View: Loading Skeleton */}
+            <div className="hidden sm:grid grid-cols-3 lg:grid-cols-4 gap-4">
+              {Array.from({ length: 4 }).map((_, i) => <ProductCardSkeleton key={i} />)}
+            </div>
+          </>
         ) : (
-          <Swiper
-            modules={[Navigation, Pagination]}
-            navigation
-            pagination={{ clickable: true, dynamicBullets: true }}
-            spaceBetween={16}
-            slidesPerView={2}
-            breakpoints={{
-              640: { slidesPerView: 3 },
-              1024: { slidesPerView: 4 },
-            }}
-            className="pb-10"
-          >
-            {(products || []).map((product, i) => (
-              <SwiperSlide key={product.id}>
-                <ProductCard product={product} index={i} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
+          <>
+            {/* Mobile View: Auto-scrolling Carousel */}
+            <div className="block sm:hidden">
+              <Swiper
+                modules={[Autoplay, Pagination]}
+                pagination={{ clickable: true, dynamicBullets: true }}
+                spaceBetween={16}
+                slidesPerView={1.5}
+                loop={true}
+                autoplay={{
+                  delay: 1500,
+                  disableOnInteraction: false,
+                }}
+                className="pb-10"
+              >
+                {(products || []).map((product, i) => (
+                  <SwiperSlide key={product.id}>
+                    <ProductCard product={product} index={i} />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
+
+            {/* Desktop View: Swiper Carousel */}
+            <div className="hidden sm:block">
+              <Swiper
+                modules={[Navigation, Pagination]}
+                navigation
+                pagination={{ clickable: true, dynamicBullets: true }}
+                spaceBetween={16}
+                slidesPerView={3}
+                breakpoints={{
+                  1024: { slidesPerView: 4 },
+                }}
+                className="pb-10"
+              >
+                {(products || []).map((product, i) => (
+                  <SwiperSlide key={product.id}>
+                    <ProductCard product={product} index={i} />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
+          </>
         )}
       </div>
     </section>

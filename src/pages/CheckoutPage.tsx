@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
@@ -12,7 +12,7 @@ import { formatPrice, getImageUrl, PLACEHOLDER_IMAGE } from '../lib/utils';
 import { ordersApi } from '../api/orders.api';
 import { settingsApi } from '../api/settings.api';
 import { useCartStore } from '../store/cart.store';
-import { useAuthStore } from '../store/auth.store';
+import { useAuth } from '../hooks/useAuth';
 import type { OrderPayload } from '../types';
 
 const schema = z.object({
@@ -33,7 +33,11 @@ export function CheckoutPage() {
   const items = useCartStore((s) => s.items);
   const finalTotal = useCartStore((s) => s.getFinalTotal());
   const clearCart = useCartStore((s) => s.clearCart);
-  const user = useAuthStore((s) => s.user);
+  const { isAuthenticated, user } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
   // Intermediate order success tracking state
   const [createdOrder, setCreatedOrder] = useState<any | null>(null);

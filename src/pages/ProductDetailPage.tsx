@@ -15,7 +15,7 @@ import { useProduct, useRelatedProducts } from '../hooks/useProducts';
 import { useLikes } from '../hooks/useLikes';
 import { useCart } from '../hooks/useCart';
 import { reviewsApi } from '../api/reviews.api';
-import { useAuthStore } from '../store/auth.store';
+import { useAuth } from '../hooks/useAuth';
 import type { ProductVariant } from '../types';
 import { UserAvatar } from '../components/ui/UserAvatar';
 import { getImageUrl } from '../lib/utils';
@@ -25,7 +25,7 @@ export function ProductDetailPage() {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
   const queryClient = useQueryClient();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuth();
 
   const { data: rawProduct, isLoading } = useProduct(slug!);
   const product = (rawProduct as any)?.data || rawProduct;

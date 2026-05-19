@@ -1,11 +1,11 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, ShoppingBag, Heart, User, Search, Grid3X3 } from 'lucide-react';
+import { Home, ShoppingBag, Heart, User, Search, Grid3X3, LogIn } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCartStore } from '../../store/cart.store';
 import { useLikesStore } from '../../store/likes.store';
-import { useAuthStore } from '../../store/auth.store';
+import { useAuth } from '../../hooks/useAuth';
 
 export function BottomNav() {
   const { t } = useTranslation();
@@ -15,7 +15,7 @@ export function BottomNav() {
 
   const itemCount = useCartStore((s) => s.getItemCount());
   const likeCount = useLikesStore((s) => s.getLikeCount());
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuth();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,8 +56,8 @@ export function BottomNav() {
     {
       to: isAuthenticated ? '/profile' : '/login',
       end: false,
-      icon: User,
-      label: isAuthenticated ? t('nav.profile', 'Профил') : t('nav.login', 'Кирish'),
+      icon: isAuthenticated ? User : LogIn,
+      label: isAuthenticated ? t('nav.profile', 'Профил') : t('nav.login', 'Вуруд'),
     },
   ];
 

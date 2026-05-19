@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { User, ShoppingBag, Heart, Camera, LogOut } from 'lucide-react';
 import { useAuthStore } from '../store/auth.store';
+import { useAuth } from '../hooks/useAuth';
 import { authApi } from '../api/auth.api';
 import { ordersApi } from '../api/orders.api';
 import { useLikesStore } from '../store/likes.store';
@@ -21,7 +22,8 @@ type Tab = (typeof TABS)[number];
 export function ProfilePage() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { isAuthenticated, user: storeUser, updateUser, logout } = useAuthStore();
+  const { isAuthenticated, user: storeUser } = useAuth();
+  const { updateUser, logout } = useAuthStore();
   const [activeTab, setActiveTab] = useState<Tab>('profile');
   const [name, setName] = useState(storeUser?.name || '');
   const likedProducts = useLikesStore((s) => s.likedProducts);

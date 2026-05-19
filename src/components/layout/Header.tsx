@@ -7,7 +7,7 @@ import { LanguageSwitcher } from '../ui/LanguageSwitcher';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import { useCartStore } from '../../store/cart.store';
 import { useLikesStore } from '../../store/likes.store';
-import { useAuthStore } from '../../store/auth.store';
+import { useAuth } from '../../hooks/useAuth';
 
 export function Header() {
   const { t } = useTranslation();
@@ -18,7 +18,7 @@ export function Header() {
 
   const itemCount = useCartStore((s) => s.getItemCount());
   const likeCount = useLikesStore((s) => s.getLikeCount());
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
@@ -124,12 +124,30 @@ export function Header() {
               )}
             </Link>
 
-            <Link
-              to={isAuthenticated ? '/profile' : '/login'}
-              className="hidden md:flex p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors text-gray-600 dark:text-gray-300"
-            >
-              <User className="w-5 h-5" />
-            </Link>
+            {isAuthenticated ? (
+              <Link
+                to="/profile"
+                className="hidden md:flex p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors text-gray-600 dark:text-gray-300"
+                aria-label="Profile"
+              >
+                <User className="w-5 h-5" />
+              </Link>
+            ) : (
+              <div className="hidden md:flex items-center gap-4 ml-2">
+                <Link
+                  to="/login"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-rose-500 transition-colors"
+                >
+                  {t('auth.login')}
+                </Link>
+                <Link
+                  to="/register"
+                  className="px-4 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-full text-sm font-medium transition-all duration-200 shadow-sm"
+                >
+                  {t('auth.register')}
+                </Link>
+              </div>
+            )}
           </div>
         </div>
 

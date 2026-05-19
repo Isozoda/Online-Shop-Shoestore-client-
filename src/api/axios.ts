@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useAuthStore } from '../store/auth.store';
 
 const getBaseURL = (): string => {
   const url = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
@@ -8,6 +9,7 @@ const getBaseURL = (): string => {
 const api = axios.create({
   baseURL: getBaseURL(),
   withCredentials: true,
+  timeout: 10000,
 });
 
 api.interceptors.request.use((config) => {
@@ -58,6 +60,11 @@ api.interceptors.response.use(
       } catch (err) {
         processQueue(err, null);
         localStorage.removeItem('accessToken');
+        try {
+          useAuthStore.getState().logout();
+        } catch (e) {
+          // ignore
+        }
         window.location.href = '/login';
         return Promise.reject(err);
       } finally {

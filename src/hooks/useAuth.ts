@@ -12,10 +12,13 @@ export function useAuth() {
   const queryClient = useQueryClient();
   const { user, isAuthenticated, login, logout: storeLogout } = useAuthStore();
 
+  const token = localStorage.getItem('accessToken');
+  const isAuth = isAuthenticated && !!token;
+
   const { data: currentUser } = useQuery({
     queryKey: ['me'],
     queryFn: authApi.getMe,
-    enabled: isAuthenticated,
+    enabled: isAuth,
     retry: false,
   });
 
@@ -54,8 +57,8 @@ export function useAuth() {
   });
 
   return {
-    user: currentUser || user,
-    isAuthenticated,
+    user: currentUser || (isAuth ? user : null),
+    isAuthenticated: isAuth,
     login: loginMutation.mutate,
     register: registerMutation.mutate,
     logout: logoutMutation.mutate,

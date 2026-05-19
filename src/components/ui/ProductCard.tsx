@@ -89,10 +89,10 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
           <button
             onClick={handleAddToCart}
-            className={`absolute bottom-2 left-2 right-2 py-2.5 px-3 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all duration-300 shadow-lg select-none ${
+            className={`absolute bottom-2 left-2 right-2 py-2 px-2.5 sm:py-2.5 sm:px-3 text-white text-xs sm:text-sm font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all duration-300 shadow-lg select-none ${
               isInCart
                 ? 'bg-[#00c853] hover:bg-[#00b048] opacity-100 translate-y-0'
-                : 'bg-rose-500 hover:bg-rose-600 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0'
+                : 'bg-rose-500 hover:bg-rose-600 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 translate-y-0 sm:translate-y-2 sm:group-hover:translate-y-0'
             }`}
           >
             {isInCart ? (
@@ -102,7 +102,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               </>
             ) : (
               <>
-                <ShoppingBag className="w-4 h-4" />
+                <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 <span>Ба сабад</span>
               </>
             )}
@@ -114,7 +114,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           <h3 className="font-medium text-gray-900 dark:text-white text-sm line-clamp-2 mb-2" title={displayName}>
             {displayName}
           </h3>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
             <PriceDisplay price={product.price} discountPrice={product.finalPrice ?? product.discountPrice} size="sm" />
             <StarRating 
               rating={(product as any).avgRating ?? product.rating ?? 0} 
