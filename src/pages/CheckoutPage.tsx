@@ -13,6 +13,8 @@ import { ordersApi } from '../api/orders.api';
 import { settingsApi } from '../api/settings.api';
 import { useCartStore } from '../store/cart.store';
 import { useAuth } from '../hooks/useAuth';
+import { App } from '@capacitor/app';
+import { Browser } from '@capacitor/browser';
 import type { OrderPayload } from '../types';
 
 const schema = z.object({
@@ -48,7 +50,38 @@ export function CheckoutPage() {
     queryFn: () => settingsApi.get(),
   });
 
-  const openChatLink = (method: 'telegram' | 'whatsapp', msgText: string, currentSettings: any) => {
+  const isNativeApp = typeof window !== 'undefined' && (window as any).Capacitor?.isNativePlatform?.();
+
+  const openExternalUrl = async (appUrl: string, fallbackUrl: string) => {
+    if (!isNativeApp) {
+      window.open(fallbackUrl, '_blank');
+      return;
+    }
+
+    const appPlugin = App as any;
+    try {
+      if (appPlugin.canOpenUrl) {
+        const result = await appPlugin.canOpenUrl({ url: appUrl });
+        if (result?.value) {
+          await appPlugin.openUrl({ url: appUrl });
+          return;
+        }
+      } else {
+        await appPlugin.openUrl({ url: appUrl });
+        return;
+      }
+    } catch {
+      // continue to fallback if the app URL cannot be opened
+    }
+
+    try {
+      await Browser.open({ url: fallbackUrl });
+    } catch {
+      window.open(fallbackUrl, '_blank');
+    }
+  };
+
+  const openChatLink = async (method: 'telegram' | 'whatsapp', msgText: string, currentSettings: any) => {
     // Copy order text to clipboard so the user can just paste it once the chat opens
     navigator.clipboard.writeText(msgText).catch(() => {});
 
@@ -63,14 +96,18 @@ export function CheckoutPage() {
           tgDomain = rawTg.trim();
         }
       }
-      window.open(`https://t.me/${tgDomain}?text=${encodeURIComponent(msgText)}`, '_blank');
+      const appUrl = `tg://resolve?domain=${tgDomain}&text=${encodeURIComponent(msgText)}`;
+      const browserUrl = `https://t.me/${tgDomain}?text=${encodeURIComponent(msgText)}`;
+      await openExternalUrl(appUrl, browserUrl);
     } else {
       const waNumber = currentSettings?.whatsappNumber ? currentSettings.whatsappNumber.replace(/[^0-9]/g, '') : '';
-      if (waNumber) {
-        window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(msgText)}`, '_blank');
-      } else {
-        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msgText)}`, '_blank');
-      }
+      const appUrl = waNumber
+        ? `whatsapp://send?phone=${waNumber}&text=${encodeURIComponent(msgText)}`
+        : `whatsapp://send?text=${encodeURIComponent(msgText)}`;
+      const browserUrl = waNumber
+        ? `https://wa.me/${waNumber}?text=${encodeURIComponent(msgText)}`
+        : `https://api.whatsapp.com/send?text=${encodeURIComponent(msgText)}`;
+      await openExternalUrl(appUrl, browserUrl);
     }
   };
 

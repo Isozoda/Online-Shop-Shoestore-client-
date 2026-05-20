@@ -1,9 +1,21 @@
 import axios from 'axios';
+import { Capacitor } from '@capacitor/core';
 import { useAuthStore } from '../store/auth.store';
 
 const getBaseURL = (): string => {
-  const url = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-  return url.endsWith('/api') ? url : `${url.replace(/\/$/, '')}/api`;
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl) {
+    return envUrl.endsWith('/api') ? envUrl : `${envUrl.replace(/\/$/, '')}/api`;
+  }
+
+  if (Capacitor.isNativePlatform()) {
+    if (Capacitor.getPlatform() === 'android') {
+      return 'http://10.0.2.2:3000/api';
+    }
+    return 'http://localhost:3000/api';
+  }
+
+  return 'http://localhost:3000/api';
 };
 
 const api = axios.create({
