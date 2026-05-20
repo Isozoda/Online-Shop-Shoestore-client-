@@ -44,6 +44,16 @@ export const productsApi = {
     }
 
     const { data } = await api.get(`/products?${params.toString()}`);
+    if (data?.meta) {
+      return {
+        data: data.data ?? [],
+        total: data.meta.total ?? 0,
+        page: data.meta.page ?? filters.page ?? 1,
+        limit: data.meta.limit ?? filters.limit ?? 20,
+        totalPages: data.meta.totalPages ?? 1,
+      };
+    }
+
     return data;
   },
 
