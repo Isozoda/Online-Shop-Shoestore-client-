@@ -289,7 +289,7 @@ export function CheckoutPage() {
                     const itemPrice = item.product.finalPrice ?? item.product.discountPrice ?? item.product.price;
                     return (
                       <div key={item.id} className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-slate-800 flex-shrink-0">
+                        <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-slate-800 shrink-0">
                           <img
                             src={getImageUrl(item.product.images?.[0]?.url || PLACEHOLDER_IMAGE)}
                             alt={displayName}

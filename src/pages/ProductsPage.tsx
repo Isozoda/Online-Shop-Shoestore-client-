@@ -97,7 +97,7 @@ export function ProductsPage() {
           </div>
 
           <div className="flex gap-6">
-            <aside className="hidden lg:block w-64 flex-shrink-0">
+            <aside className="hidden lg:block w-64 shrink-0">
               <FilterSidebar filters={filters} onFilterChange={updateFilter} />
             </aside>
 

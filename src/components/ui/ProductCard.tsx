@@ -51,7 +51,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       transition={{ duration: 0.4, delay: index * 0.05 }}
     >
       <Link to={`/products/${product.slug}`} className="block group">
-        <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 dark:bg-slate-800">
+        <div className="relative aspect-3/4 rounded-2xl overflow-hidden bg-gray-100 dark:bg-slate-800">
           <img
             src={getImageUrl(mainImage)}
             alt={displayName}
