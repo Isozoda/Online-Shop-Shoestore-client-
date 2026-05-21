@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, ShoppingBag, Heart, User, Grid3X3, LogIn } from 'lucide-react';
+import { Home, ShoppingBag, Heart, User, Phone, LogIn } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useCartStore } from '../../store/cart.store';
 import { useLikesStore } from '../../store/likes.store';
@@ -21,10 +21,10 @@ export function BottomNav() {
       label: t('nav.home'),
     },
     {
-      to: '/products',
+      to: '/contact',
       end: false,
-      icon: Grid3X3,
-      label: t('nav.products'),
+      icon: Phone,
+      label: t('nav.contact', 'Contact'),
     },
     {
       to: '/cart',
