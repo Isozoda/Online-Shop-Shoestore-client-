@@ -8,6 +8,10 @@ const getBaseURL = (): string => {
     return envUrl.endsWith('/api') ? envUrl : `${envUrl.replace(/\/$/, '')}/api`;
   }
 
+  if (import.meta.env.PROD) {
+    return 'https://shoestore-api-n8oj.onrender.com/api';
+  }
+
   if (Capacitor.isNativePlatform()) {
     if (Capacitor.getPlatform() === 'android') {
       return 'http://10.0.2.2:3000/api';

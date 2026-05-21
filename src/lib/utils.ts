@@ -55,7 +55,7 @@ export function getImageUrl(path: string): string {
   if (!path) return PLACEHOLDER_IMAGE;
   if (path.startsWith('http') || path.startsWith('data:')) return path;
   
-  const apiUrl = import.meta.env.VITE_API_URL || '';
+  const apiUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://shoestore-api-n8oj.onrender.com/api' : '');
   let baseUrl = apiUrl.replace(/\/api\/?$/, '');
   
   if (baseUrl.endsWith('/')) {
