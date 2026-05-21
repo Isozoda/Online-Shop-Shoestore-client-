@@ -1,7 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, ShoppingBag, Heart, User, Search, Grid3X3, LogIn } from 'lucide-react';
-import { useState } from 'react';
+import { Home, ShoppingBag, Heart, User, Grid3X3, LogIn } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useCartStore } from '../../store/cart.store';
 import { useLikesStore } from '../../store/likes.store';
@@ -10,21 +9,9 @@ import { useAuth } from '../../hooks/useAuth';
 export function BottomNav() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-
   const itemCount = useCartStore((s) => s.getItemCount());
   const likeCount = useLikesStore((s) => s.getLikeCount());
   const { isAuthenticated } = useAuth();
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchOpen(false);
-      setSearchQuery('');
-    }
-  };
 
   const tabs = [
     {
@@ -63,52 +50,6 @@ export function BottomNav() {
 
   return (
     <>
-      {/* Search overlay */}
-      <AnimatePresence>
-        {searchOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="md:hidden fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
-            onClick={() => setSearchOpen(false)}
-          />
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {searchOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 80 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 80 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 35 }}
-            className="md:hidden fixed bottom-[calc(64px+env(safe-area-inset-bottom))] left-0 right-0 z-50 px-4 pb-3"
-          >
-            <form
-              onSubmit={handleSearch}
-              className="flex gap-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-2xl p-3"
-            >
-              <Search className="w-5 h-5 text-gray-400 self-center ml-1 shrink-0" />
-              <input
-                autoFocus
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t('filter.search', 'Ҷустуҷӯ...')}
-                className="flex-1 bg-transparent text-gray-900 dark:text-white text-sm outline-none placeholder-gray-400"
-              />
-              <button
-                type="submit"
-                className="px-3 py-1.5 bg-rose-500 text-white rounded-xl text-sm font-semibold hover:bg-rose-600 transition-colors"
-              >
-                {t('common.search', 'Ёбед')}
-              </button>
-            </form>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Bottom Tab Bar — mobile only */}
       <nav
         className="md:hidden fixed bottom-0 left-0 right-0 z-50"
@@ -123,29 +64,6 @@ export function BottomNav() {
           shadow-[0_-8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_-8px_32px_rgba(0,0,0,0.3)]
         ">
           <div className="flex items-center h-16 px-1">
-            {/* Search button — far left, before tabs */}
-            <button
-              onClick={() => setSearchOpen((v) => !v)}
-              className={`
-                flex flex-col items-center justify-center flex-1 h-full gap-1 relative
-                transition-colors duration-200
-                ${searchOpen
-                  ? 'text-rose-500'
-                  : 'text-gray-500 dark:text-gray-400 active:text-rose-400'
-                }
-              `}
-            >
-              <motion.div
-                whileTap={{ scale: 0.85 }}
-                className="relative flex items-center justify-center"
-              >
-                <Search className="w-[22px] h-[22px]" />
-              </motion.div>
-              <span className="text-[10px] font-medium leading-none tracking-tight">
-                {t('nav.search', 'Ёбед')}
-              </span>
-            </button>
-
             {tabs.map((tab) => (
               <NavLink
                 key={tab.to}
