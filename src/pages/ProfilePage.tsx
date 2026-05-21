@@ -53,8 +53,9 @@ export function ProfilePage() {
       updateUser({ avatar });
       queryClient.invalidateQueries({ queryKey: ['me'] });
       toast.success('Аватар тағйир ёфт');
-    } catch {
-      toast.error(t('common.error'));
+    } catch (err: any) {
+      const errMsg = err.response?.data?.message || t('common.error');
+      toast.error(Array.isArray(errMsg) ? errMsg[0] : errMsg);
     }
   };
 
